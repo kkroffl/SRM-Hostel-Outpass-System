@@ -10,51 +10,51 @@
 </head>
 
 <body>
-    <header class="navbar">
-        <div class="nav-left">
-            <img src="srm_logo.webp" class="logo" alt="SRM Logo" />
-            class="logo" />
-            <h1>Student Dashboard</h1>
-        </div>
-        <div class="nav-right">
-            <button class="btn" onclick="logoutStudent()">Logout</button>
-        </div>
-    </header>
-
-    <div class="container">
-        <h2>Apply for Outpass</h2>
-        <form id="outpassForm">
-            <label>Reason:</label>
-            <input type="text" id="reason" required />
-
-            <label>From Date:</label>
-            <input type="date" id="fromDate" required />
-
-            <label>To Date:</label>
-            <input type="date" id="toDate" required />
-
-            <button type="submit" class="btn">Apply</button>
-        </form>
-
-        <h2 style="margin-top: 30px;">Your Outpass Requests</h2>
-        <div id="outpassCards" class="card-container"></div>
+<header class="navbar student-navbar">
+    <div class="left-section">
+        <img src="./images/img.png" class="logo" alt="SRM Logo" />
+        <h1 class="dashboard-title">Student Dashboard</h1>
     </div>
+    <button class="logout-btn" onclick="logoutStudent()">Logout</button>
+</header>
 
-    <footer>
-        <p>© SRM Institute of Science and Technology</p>
-    </footer>
+<div id="message"></div>
 
-    <script>
-        const form = document.getElementById("outpassForm");
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const reason = document.getElementById("reason").value;
-            const fromDate = document.getElementById("fromDate").value;
-            const toDate = document.getElementById("toDate").value;
-            applyOutpass(reason, fromDate, toDate);
-            form.reset();
-        });
-    </script>
+<div class="container">
+    <h2>Apply for Outpass</h2>
+    <form id="outpassForm">
+        <label>Reason:</label>
+        <input type="text" id="reason" required />
+
+        <label>From Date:</label>
+        <input type="date" id="fromDate" required />
+
+        <label>To Date:</label>
+        <input type="date" id="toDate" required />
+        <br>
+
+        <button type="submit" class="btn">APPLY</button>
+    </form>
+
+    <h2 style="margin-top: 30px;">Your Outpass Requests</h2>
+    <div id="outpassCards" class="card-container"></div>
+</div>
+
+<footer>
+    <p>© SRM Institute of Science and Technology</p>
+</footer>
+
+<script>
+    const form = document.getElementById("outpassForm");
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const reason = document.getElementById("reason").value;
+        const fromDate = document.getElementById("fromDate").value;
+        const toDate = document.getElementById("toDate").value;
+        applyOutpass(reason, fromDate, toDate);
+        form.reset();
+    });
+</script>
 </body>
 
 </html>

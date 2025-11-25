@@ -11,30 +11,39 @@ public class ApplyOutpassServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("studentId") == null) {
-            res.getWriter().print("not_logged_in");
-            return;
-        }
+        res.setContentType("text/plain");
 
-        int studentId = (int) session.getAttribute("studentId");
+        // Get rId from request (frontend passes it in the fetch body)
+        String rId = req.getParameter("rId");
         String reason = req.getParameter("reason");
         String fromDate = req.getParameter("fromDate");
         String toDate = req.getParameter("toDate");
 
+        // If rId missing, reject
+        if (rId == null || rId.isEmpty()) {
+            res.getWriter().print("missing_rId");
+            return;
+        }
+
         try (Connection conn = DBConnector.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO outpass_requests (student_id, reason, from_date, to_date) VALUES (?, ?, ?, ?)"
+                    "INSERT INTO outpass_requests (rId, reason, from_date, to_date, status) VALUES (?, ?, ?, ?, 'Pending')"
             );
-            ps.setInt(1, studentId);
+            ps.setString(1, rId);
             ps.setString(2, reason);
             ps.setString(3, fromDate);
             ps.setString(4, toDate);
-            ps.executeUpdate();
 
-            res.getWriter().print("success");
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                res.getWriter().print("success");
+            } else {
+                res.getWriter().print("fail");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
+            res.getWriter().print("error");
         }
     }
 }

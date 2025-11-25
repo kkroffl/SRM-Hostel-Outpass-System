@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login | SRM Outpass</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
 </head>
 
 <body>
     <header class="navbar">
-        <img src="images/srm_logo.webp" class="logo" alt="SRM Logo" />
-        <h1>SRM Hostel Outpass - Admin Login</h1>
+        <img src="./images/img.png" class="logo" alt="SRM Logo" />
+        <h1>SRM Hostel Outpass | Admin Login</h1>
     </header>
+
+    <div id="message"></div>
+
     <div class="container form-container" >
         <h2>Admin Login</h2>
         <form id="loginForm">
@@ -23,7 +25,7 @@
             <label>Password:</label>
             <input type="password" id="password" required />
 
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn" id="adminLoginBtn">Login</button>
         </form>
     </div>
 
@@ -31,14 +33,6 @@
         <p>© SRM Institute of Science and Technology</p>
     </footer>
 
-    <script>
-        document.getElementById("loginForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value.trim();
-            loginStudent(email, password);
-        });
-    </script>
+    <script src="adminLogin.js"></script>
 </body>
-
 </html>
