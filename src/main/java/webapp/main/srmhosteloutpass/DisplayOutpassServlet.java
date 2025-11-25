@@ -15,7 +15,6 @@ public class DisplayOutpassServlet extends HttpServlet {
 
         String rId = req.getParameter("rId"); // ✅ Read from request, not session
         JSONArray jsonArray = new JSONArray();
-
         res.setContentType("application/json");
 
         if (rId == null || rId.isEmpty()) {
@@ -29,8 +28,8 @@ public class DisplayOutpassServlet extends HttpServlet {
             );
             ps.setString(1, rId);
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
+
                 JSONObject obj = new JSONObject();
                 obj.put("reason", rs.getString("reason"));
                 obj.put("fromDate", rs.getString("from_date"));

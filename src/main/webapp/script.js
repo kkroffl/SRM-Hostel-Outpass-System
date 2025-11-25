@@ -128,12 +128,11 @@ function applyOutpass(reason, fromDate, toDate) {
 function displayStudentOutpasses() {
     const student = JSON.parse(localStorage.getItem("loggedInStudent"));
     const container = document.getElementById("outpassCards");
-    const msgBox = document.getElementById("message");
     if (!container || !student) return;
 
     showMessage("Fetching your outpass requests...", "info");
 
-    fetch(`displayOutpass?rId=${encodeURIComponent(student.rId)}`)
+    fetch("/SRMHostelOutpass_war_exploded/admin_dashboard",{method:"POST"})
         .then((res) => res.json())
         .then((requests) => {
             container.innerHTML = "";
@@ -180,7 +179,7 @@ function loadAdminOutpasses() {
     const msg = document.getElementById("message");
     if (msg) msg.innerHTML = "Loading outpass requests...";
 
-    fetch("adminDashboardData")
+    fetch("admin_dashboard")
         .then(res => res.json())
         .then(list => {
             container.innerHTML = "";

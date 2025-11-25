@@ -4,7 +4,7 @@ import java.sql.DriverManager;
 public class DBConnector {
     private static final String URL = "jdbc:mysql://localhost:3306/hostel_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "MySQL_kkr07";
+    private static final String PASSWORD = "Koushik@123";
 
     public static Connection getConnection() {
         Connection conn = null;

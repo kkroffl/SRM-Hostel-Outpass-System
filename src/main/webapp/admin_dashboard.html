@@ -38,7 +38,7 @@
         <img src="./images/img.png" class="logo" alt="SRM Logo" />
         <h1 class="dashboard-title">Admin Dashboard</h1>
     </div>
-    <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    <button class="logout-btn" onclick="logoutStudent()">Logout</button>
 </header>
 
 <main class="admin-wrapper">
@@ -47,19 +47,18 @@
     <section class="top-bar">
         <div class="small-muted">Manage student outpass requests — approve or reject.</div>
         <div>
-            <button class="btn" onclick="loadAdminOutpasses()">Refresh</button>
-        </div>s
+            <button class="logout-btn" onclick="loadAdminOutpasses()">Refresh</button>
+        </div>
     </section>
 
     <section id="adminCards" aria-live="polite">
         <!-- admin cards will be injected here by admin JS -->
     </section>
 
-    <div style="margin-top:28px; color:#666; font-size:0.9rem;">
-        Tip: Click <strong>Approve</strong> to mark as <em>Approved</em> or <strong>Reject</strong> to mark as <em>Rejected</em>. Changes are saved immediately.
-    </div>
 </main>
-
+<footer>
+    <p>© SRM Institute of Science and Technology</p>
+</footer>
 <script src="script.js"></script>
 </body>
 </html>

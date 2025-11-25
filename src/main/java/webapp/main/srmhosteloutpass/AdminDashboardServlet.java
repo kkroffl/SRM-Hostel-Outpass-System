@@ -9,8 +9,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.sql.*;
 
-@WebServlet("/adminDashboardData")
+@WebServlet("/admin_dashboard")
 public class AdminDashboardServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        doPost(req, res);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -19,11 +26,14 @@ public class AdminDashboardServlet extends HttpServlet {
         JSONArray arr = new JSONArray();
 
         try (Connection conn = DBConnector.getConnection()) {
-            // fetch all requests (you can filter or paginate)
+
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT requestId, rId, reason, from_date, to_date, status FROM outpass_requests ORDER BY requestId DESC"
+                    "SELECT requestId, rId, reason, from_date, to_date, status " +
+                            "FROM outpass_requests ORDER BY requestId DESC"
             );
+
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 JSONObject o = new JSONObject();
                 o.put("requestId", rs.getInt("requestId"));
@@ -34,9 +44,12 @@ public class AdminDashboardServlet extends HttpServlet {
                 o.put("status", rs.getString("status"));
                 arr.put(o);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        res.getWriter().print(arr.toString());
+
+        res.getWriter().print(arr);
     }
 }
+

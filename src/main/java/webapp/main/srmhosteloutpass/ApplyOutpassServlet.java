@@ -13,23 +13,39 @@ public class ApplyOutpassServlet extends HttpServlet {
 
         res.setContentType("text/plain");
 
-        // Get rId from request (frontend passes it in the fetch body)
-        String rId = req.getParameter("rId");
+        String roll = req.getParameter("rId");   // <-- correct
+        // <-- this is rId (example: "SRM123")
         String reason = req.getParameter("reason");
         String fromDate = req.getParameter("fromDate");
         String toDate = req.getParameter("toDate");
 
-        // If rId missing, reject
-        if (rId == null || rId.isEmpty()) {
+        if (roll == null || roll.isEmpty()) {
             res.getWriter().print("missing_rId");
             return;
         }
 
         try (Connection conn = DBConnector.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO outpass_requests (rId, reason, from_date, to_date, status) VALUES (?, ?, ?, ?, 'Pending')"
+
+            // First fetch the student.id (numeric)
+            PreparedStatement findId = conn.prepareStatement(
+                    "SELECT id FROM students WHERE rId = ?"
             );
-            ps.setString(1, rId);
+            findId.setString(1, roll);
+            ResultSet rs = findId.executeQuery();
+
+            if (!rs.next()) {
+                res.getWriter().print("student_not_found");
+                return;
+            }
+
+            int studentId = rs.getInt("id");
+
+            // Insert outpass with studentId
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO outpass_requests (requestId, reason, from_date, to_date) VALUES (?, ?, ?, ?)"
+            );
+
+            ps.setInt(1, studentId);
             ps.setString(2, reason);
             ps.setString(3, fromDate);
             ps.setString(4, toDate);
@@ -46,4 +62,6 @@ public class ApplyOutpassServlet extends HttpServlet {
             res.getWriter().print("error");
         }
     }
+
+
 }

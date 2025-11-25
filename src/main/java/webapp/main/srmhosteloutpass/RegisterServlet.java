@@ -19,11 +19,6 @@ public class RegisterServlet extends HttpServlet {
         String rId = req.getParameter("rId");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-            System.out.printf("""
-                    {
-                       %s,%s,%s,%s
-                    }
-                    %n""",name,rId,email,password);
 
         try (Connection conn = DBConnector.getConnection()) {
             PreparedStatement check = conn.prepareStatement("SELECT * FROM students WHERE email=?");
@@ -34,6 +29,7 @@ public class RegisterServlet extends HttpServlet {
             PrintWriter out = res.getWriter();
 
             if (rs.next()) {
+                System.out.println("Exists?");
                 out.print("exists");
                 return;
             }
@@ -47,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
             ps.setString(4, password);
             ps.executeUpdate();
 
-            out.print("Success");
+            out.print("success");
         } catch (Exception e) {
             e.printStackTrace();
         }
