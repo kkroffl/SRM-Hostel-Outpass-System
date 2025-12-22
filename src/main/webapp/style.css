@@ -92,16 +92,20 @@ input, textarea {
     color: white;
 }
 
-.pending {
+.status-pending {
     background: #ffcc00;
     color: #333;
 }
 
-.approved {
+.status-approved-and-open{
+    background: #0066cc;
+}
+
+.status-approved-and-closed {
     background: #28a745;
 }
 
-.rejected {
+.status-rejected {
     background: #dc3545;
 }
 

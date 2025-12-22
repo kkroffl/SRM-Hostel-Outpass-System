@@ -11,7 +11,7 @@ import java.sql.*;
 @WebServlet( "/admin_dashboard")
 public class AdminDashboardServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         res.setContentType("application/json");
         JSONArray arr = new JSONArray();
@@ -35,13 +35,10 @@ public class AdminDashboardServlet extends HttpServlet {
                 o.put("fromDate", rs.getDate("from_date").toString());
                 o.put("toDate", rs.getDate("to_date").toString());
                 o.put("status", rs.getString("status"));
-                // new fields
                 o.put("studentMobileNumber", rs.getString("studentMobileNumber"));
                 o.put("parentMobileNumber", rs.getString("parentMobileNumber"));
                 arr.put(o);
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

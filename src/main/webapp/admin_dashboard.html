@@ -110,7 +110,6 @@
             }
         }
     </style>
-    <script type="module" defer src="adminDashboard.js"></script>
 </head>
 <body>
 <header class="navbar student-navbar">
@@ -118,7 +117,7 @@
         <img src="./images/img.png" class="logo" alt="SRM Logo"/>
         <h1 class="dashboard-title">Admin Dashboard</h1>
     </div>
-    <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    <button class="logout-btn" id="logout" >LOG OUT</button>
 </header>
 
 <main class="admin-wrapper">
@@ -157,7 +156,7 @@
             </div>
 
             <!--                    oninput="filterOutpasses(this.value)"-->
-            <button class="logout-btn" onclick="loadAdminOutpasses()">Refresh</button>
+            <button class="logout-btn" id="refresh">REFRESH</button>
         </div>
     </section>
 
@@ -169,5 +168,6 @@
 <footer>
     <p>© SRM Institute of Science and Technology</p>
 </footer>
+<script type="module" defer src="adminDashboard.js"></script>
 </body>
 </html>

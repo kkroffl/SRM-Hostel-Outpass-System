@@ -14,7 +14,6 @@ public class AdminActionServlet extends HttpServlet {
 
         String reqIdStr = req.getParameter("requestId");
         String action = req.getParameter("action"); // expected "approve" or "reject"
-
         res.setContentType("text/plain");
 
         if (reqIdStr == null || action == null) {
@@ -30,7 +29,8 @@ public class AdminActionServlet extends HttpServlet {
             return;
         }
 
-        String newStatus = action.equalsIgnoreCase("approve") ? "Approved" : "Rejected";
+        String approved=StatusCodes.APPROVED_AND_OPEN.code;
+        String newStatus = action.equalsIgnoreCase(approved) ? approved : StatusCodes.REJECTED.code;
 
         try (Connection conn = DBConnector.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(

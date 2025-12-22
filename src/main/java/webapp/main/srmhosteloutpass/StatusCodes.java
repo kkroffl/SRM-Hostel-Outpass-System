@@ -5,7 +5,7 @@ public enum StatusCodes {
     APPROVED_AND_OPEN("Approved & Open"),
     APPROVED_AND_CLOSED("Approved & Closed"),
     PENDING("Pending");
-    final String code;
+    final public String code;
     StatusCodes(String code) {
         this.code = code;
     }

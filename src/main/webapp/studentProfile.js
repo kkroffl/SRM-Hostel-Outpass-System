@@ -1,4 +1,5 @@
 import {LOGGED_IN_STUDENT} from "./script.js";
+import {returnColor} from "./StatusCodes.js";
 
 const student = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
 
@@ -6,7 +7,6 @@ if (!student) {
     window.location.href = "student_login.html";
 }
 const studentDetailsDiv = document.getElementById("studentDetails");
-const historyTable = document.getElementById("outpassHistory");
 let [s, p] = []
 fetch(`studentDetails`
     , {
@@ -55,36 +55,33 @@ fetch(`student_outpasses?registeredNumber=${student.registeredNumber}`)
                     border: 1px solid #ddd;
                     text-align: left;
                 }
-
                 .outpass-table thead {
                     background-color: #2c3e50;
                     color: #fff;
                 }
-
                 .outpass-table tbody tr:nth-child(even) {
                     background-color: #f8f9fa;
                 }
-
                 .outpass-table tbody tr:hover {
                     background-color: #eef2f7;
                 }
-
                 .no-data {
                     text-align: center;
                     font-style: italic;
                     color: #666;
                 }
-
-                .status-approved {
+                .status-approved-and-open {
+                    color: #2e65cc;
+                    font-weight: bold;
+                }
+                .status-approved-and-closed {
                     color: #2ecc71;
                     font-weight: bold;
                 }
-
                 .status-pending {
                     color: #f39c12;
                     font-weight: bold;
                 }
-
                 .status-rejected {
                     color: #e74c3c;
                     font-weight: bold;
@@ -116,11 +113,7 @@ fetch(`student_outpasses?registeredNumber=${student.registeredNumber}`)
         }
 
         data.forEach(o => {
-            const statusClass =
-                o.status === "APPROVED" ? "status-approved" :
-                    o.status === "PENDING" ? "status-pending" :
-                        "status-rejected";
-
+            const statusClass =returnColor(o.status)
             historyTable.innerHTML += `
                 <tr>
                     <td>${o.reason}</td>

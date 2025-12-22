@@ -1,4 +1,5 @@
 import {LOGGED_IN_STUDENT, Message, STATUS} from "./script.js";
+import {returnColor} from "./StatusCodes.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 requests.forEach((req) => {
                     const card = document.createElement("div");
-                    card.className = `card ${req.status.toLowerCase()}`;
+                    card.className = `card ${returnColor(req.status)}`;
                     card.innerHTML = `
                     <div class="card-header">
                         <h2><b>Name</b>: ${student.name}</h2>

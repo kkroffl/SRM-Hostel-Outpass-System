@@ -1,26 +1,17 @@
 import {LOGGED_IN_STUDENT, Message, STATUS} from "./script.js"
-import {STATUS_CODES} from "./StatusCodes";
+import {STATUS_CODES} from "./StatusCodes.js";
 const grouped = {};
-loadAdminOutpasses()
-let selectedStudent=null;
-document.getElementById('search-button').addEventListener('click',(e)=>{
-    e.preventDefault();
-    filterStudentOutpasses(document.getElementById('searchOutpass').value)
-})
-function filterStudentOutpasses(studentID){
-    selectedStudent=studentID;
-}
-function loadAdminOutpasses() {
+const loadAdminOutpasses = function () {
     const container = document.getElementById("adminCards");
     if (!container) return;
     const msg = document.getElementById("message");
     if (msg) msg.innerHTML = "Loading outpass requests...";
-
-    fetch("admin_dashboard", {method: 'GET'})
+    fetch("admin_dashboard", {method: 'POST'})
         .then(res => res.json())
         .then(list => {
+            console.log(list)
             container.innerHTML = "";
-            container.style.display="block";
+            container.style.display = "block";
             if (!list || list.length === 0) {
                 container.innerHTML = "<p>No outpass requests.</p>";
                 if (msg) msg.innerHTML = "No requests found.";
@@ -37,8 +28,8 @@ function loadAdminOutpasses() {
                 grouped[item.studentId].push(item);
             });
             Object.keys(grouped).forEach(studentId => {
-                const outpassesOfStudent=grouped[studentId];
-                const {name,studentMobileNumber,parentMobileNumber}=outpassesOfStudent[0];
+                const outpassesOfStudent = grouped[studentId];
+                const {name, studentMobileNumber, parentMobileNumber} = outpassesOfStudent[0];
                 const wrapper = document.createElement("div");
                 wrapper.style.marginBottom = "16px";
                 wrapper.style.border = "1px solid #ddd";
@@ -107,17 +98,16 @@ function loadAdminOutpasses() {
             });
         })
         .catch(_ => {
-            console.log("Not connected to servlet!!")
+            console.error("Not connected to servlet!!")
             if (document.getElementById("message"))
                 document.getElementById("message").innerHTML = "Unable to load requests.";
         });
-}
-
-window.loadAdminOutpasses = loadAdminOutpasses;
+};
+loadAdminOutpasses()
 
 function adminAction(requestId, action) {
     const msg = document.getElementById("message");
-    if (msg) msg.innerHTML = `${action === "approve" ? "Approving" : "Rejecting"} request ${requestId}...`;
+    if (msg) msg.innerHTML = `${action === STATUS_CODES.APPROVED_AND_OPEN ? "Approving" : "Rejecting"} request ${requestId}...`;
 
     fetch("adminAction", {
         method: "POST",
@@ -150,4 +140,5 @@ function logoutAdmin() {
     setTimeout(() => (window.location.href = "index.html"), 1000);
 }
 
-window.logoutAdmin = logoutAdmin
+document.getElementById('refresh').addEventListener('click', loadAdminOutpasses);
+document.getElementById('logout').addEventListener('click', logoutAdmin);
