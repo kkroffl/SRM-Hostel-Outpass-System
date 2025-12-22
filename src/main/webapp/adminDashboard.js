@@ -1,4 +1,5 @@
 import {LOGGED_IN_STUDENT, Message, STATUS} from "./script.js"
+import {STATUS_CODES} from "./StatusCodes";
 const grouped = {};
 loadAdminOutpasses()
 let selectedStudent=null;
@@ -35,13 +36,8 @@ function loadAdminOutpasses() {
                 }
                 grouped[item.studentId].push(item);
             });
-
-// Render grouped dropdowns
             Object.keys(grouped).forEach(studentId => {
                 const outpassesOfStudent=grouped[studentId];
-                if(selectedStudent!==null && outpassesOfStudent[studentId][0]["studentId"]!==selectedStudent){
-                    return;
-                }
                 const {name,studentMobileNumber,parentMobileNumber}=outpassesOfStudent[0];
                 const wrapper = document.createElement("div");
                 wrapper.style.marginBottom = "16px";
@@ -86,7 +82,7 @@ function loadAdminOutpasses() {
             <p><b>Outpass ID:</b> ${item.rId}</p>
             <h3>Reason: ${escapeHtml(item.reason)}</h3>
             <p><b>From:</b> ${item.fromDate} &nbsp; <b>To:</b> ${item.toDate}</p>
-            <p><b>Status:</b> ${item.status || "Pending"}</p>
+            <p><b>Status:</b> ${item.status || STATUS_CODES.PENDING}</p>
             <div style="margin-top:8px; display:flex; gap:8px;">
                 <button class="btn-approve" data-id="${item.rId}">Approve</button>
                 <button class="btn-reject" data-id="${item.rId}">Reject</button>
@@ -104,10 +100,10 @@ function loadAdminOutpasses() {
 
             // attach click listeners (event delegation also possible)
             container.querySelectorAll(".btn-approve").forEach(b => {
-                b.addEventListener("click", () => adminAction(b.dataset.id, "approve"));
+                b.addEventListener("click", () => adminAction(b.dataset.id, STATUS_CODES.APPROVED_AND_OPEN));
             });
             container.querySelectorAll(".btn-reject").forEach(b => {
-                b.addEventListener("click", () => adminAction(b.dataset.id, "reject"));
+                b.addEventListener("click", () => adminAction(b.dataset.id, STATUS_CODES.REJECTED));
             });
         })
         .catch(_ => {

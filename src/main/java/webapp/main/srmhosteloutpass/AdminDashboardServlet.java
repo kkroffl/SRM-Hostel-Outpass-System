@@ -8,17 +8,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.*;
-
 @WebServlet( "/admin_dashboard")
 public class AdminDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-
         res.setContentType("application/json");
         JSONArray arr = new JSONArray();
         try (Connection conn = DBConnector.getConnection()) {
-
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT " +
                             "o.name, o.studentId, o.rId, o.reason, o.from_date, o.to_date, o.status, " +
@@ -31,7 +28,6 @@ public class AdminDashboardServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 JSONObject o = new JSONObject();
-
                 o.put("name", rs.getString("name"));
                 o.put("studentId", rs.getInt("studentId"));
                 o.put("rId", rs.getInt("rId"));
@@ -39,11 +35,9 @@ public class AdminDashboardServlet extends HttpServlet {
                 o.put("fromDate", rs.getDate("from_date").toString());
                 o.put("toDate", rs.getDate("to_date").toString());
                 o.put("status", rs.getString("status"));
-
                 // new fields
                 o.put("studentMobileNumber", rs.getString("studentMobileNumber"));
                 o.put("parentMobileNumber", rs.getString("parentMobileNumber"));
-
                 arr.put(o);
             }
 
