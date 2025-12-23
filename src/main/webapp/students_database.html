@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Students Database | SRM Hostel Outpass</title>
+
+    <link rel="stylesheet" href="style.css"/>
+
+    <style>
+        .db-wrapper {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .student-card {
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-header h3 {
+            margin: 0;
+            color: var(--srm-blue);
+        }
+
+        .student-details p {
+            margin: 4px 0;
+            font-size: 0.95rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        th {
+            background: #f2f6fa;
+        }
+
+        .no-records {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar student-navbar">
+    <h1>Students Database</h1>
+</header>
+
+<main class="db-wrapper">
+    <div id="message"></div>
+
+    <section id="studentsContainer">
+        <!-- Student cards injected here -->
+    </section>
+</main>
+
+<footer class="app-footer">
+    <p>© SRM Institute of Science and Technology</p>
+    <a href="admin_dashboard.html">
+        <button class="logout-btn">Back to Admin</button>
+    </a>
+</footer>
+<script type="module" defer src="studentsDatabase.js"></script>
+</body>
+</html>

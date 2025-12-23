@@ -35,7 +35,7 @@ function loginAdmin(email, password) {
                 if (msgEl) showMessage("Admin login successful — redirecting...", STATUS.SUCCESS);
                 // explicit redirect to admin dashboard
                 setTimeout(() => {
-                    window.location.href = "admin_dashboard.html";
+                    window.location.href = "admin_homepage.html";
                 }, 600);
                 return;
             }

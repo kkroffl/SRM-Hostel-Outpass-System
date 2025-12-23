@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @WebServlet("/studentDetails")
-public class DataProviderServlet extends HttpServlet {
+public class    DataProviderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType("text/plain");
