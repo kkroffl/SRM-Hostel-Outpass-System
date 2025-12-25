@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Outpass Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .card {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .value {
+            color: #222;
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .Pending { background: orange; }
+        .Approved { background: green; }
+        .Rejected { background: red; }
+
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #007bff;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        img {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card" id="outpassCard">
+    <h2>Outpass Details</h2>
+</div>
+
+<div class="actions">
+    <button onclick="window.print()">PRINT</button>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const requestId = params.get("requestId");
+    fetch(`outpassDetails?registeredNumber=${requestId}`)
+        .then(res => res.json())
+        .then(data => renderOutpass(data));
+    function changeTitle(s){
+        document.title=`${document.title} | ID#${s}`
+    }
+    function renderOutpass(o) {
+        const card = document.getElementById("outpassCard");
+        changeTitle(o.requestId)
+        card.innerHTML += `
+        <div class="row"><span class="label">Request ID</span><span>${o.requestId}</span></div>
+        <div class="row"><span class="label">Student ID</span><span>${o.studentId }</span></div>
+        <div class="row"><span class="label">Name</span><span>${o.name}</span></div>
+        <div class="row"><span class="label">Reason</span><span>${o.reason}</span></div>
+        <div class="row"><span class="label">Leaving Date</span><span>${o.leaving_date}</span></div>
+        <div class="row"><span class="label">Leaving Time</span><span>${o.leaving_time}</span></div>
+        <div class="row"><span class="label">Expected Return</span>
+            <span>${o.expected_return_date} ${o.expected_return_time}</span>
+        </div>
+        <div class="row"><span class="label">Actual Return</span>
+            <span>${o.actual_return_date ?? "—"} ${o.actual_return_time ?? ""}</span>
+        </div>
+        <div class="row">
+            <span class="label">Status</span>
+            <span class="status ${o.status}">${o.status}</span>
+        </div>
+        <div class="row"><span class="label">Type</span><span>${o.type_of_outpass}</span></div>
+        <div class="row"><span class="label">Applied On</span>
+            <span>${o.applied_date} ${o.applied_time}</span>
+        </div>
+        ${
+            o.type_of_outpass==='Medical'
+                ? `<div class="row">
+                   <span class="label">Proof</span>
+                   <img src="outpassProof?requestId=${o.requestId}">
+               </div>`
+                : ""
+        }
+    `;
+    }
+</script>
+
+</body>
+</html>
