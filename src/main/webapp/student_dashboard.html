@@ -48,7 +48,7 @@
 <body>
 <header class="navbar">
     <img src="./images/img.png" class="logo" alt="SRM Logo"/>
-    <h1>SRM Hostel Outpass - Student Homepage</h1>
+    <h1>SRM Hostel Outpass - Student Dashboard</h1>
 
     <div class="navbar-right">
         <a href="student_profile.html" title="View Profile">
@@ -70,7 +70,10 @@
                 <input type="radio" id="medical-leave" name="fav_language" value="medical" checked>Medical Leave
             </label>
             <label>
-                <input type="radio" id="normal-leave" name="fav_language" value="normal">Normal Outing
+                <input type="radio" id="normal-leave" name="fav_language" value="normal">Local Outing
+            </label>
+            <label>
+                <input type="radio" id="hometown-leave" name="fav_language" value="hometown">Hometown
             </label>
             <label>
                 <input type="radio" id="other-leave" name="fav_language" value="other">Other
@@ -91,9 +94,6 @@
         <label for="expectedReturnDay"><b>Expected Return Day</b>:</label>
         <input readonly type="text" id="expectedReturnDay" placeholder="Monday - Sunday" required/>
 
-        <label for="expectedReturnTime"><b>Return Time</b>:</label>
-        <input type="time" id="expectedReturnTime" required/>
-
         <label id="proof-image-label" for="proof-image">Proof Image Upload:</label>
         <input type="file" id="proof-image" alt="Proof Image(Maximum 4MB)" name="Proof Image(Max 4 MB)"  accept=".jpeg,.jpg,.png" required>
 
@@ -106,7 +106,7 @@
     <div id="imageOverlay" class="image-overlay">
         <img id="overlayImg">
     </div>
-    <h2 style="margin-top: 30px;">Your Previous Outpass Requests</h2>
+    <h2 style="margin-top: 30px;">Your Outpass Requests</h2>
     <div id="outpassCards" class="card-container"></div>
 </div>
 
@@ -115,6 +115,6 @@
     <button class="logout-btn">Logout</button>
 </footer>
 
-<script type="module" defer src="applyOutpass.js"></script>
+<script type="module" defer src="studentDashboard.js"></script>
 </body>
 </html>

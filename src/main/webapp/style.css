@@ -403,21 +403,22 @@ h1 {
 
 #radio-choice {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    gap: 24px;
+    gap: 32px;              /* consistent spacing */
+    flex-wrap: wrap;        /* prevents overflow on small screens */
     font-size: 16px;
 }
 
 #radio-choice label {
     display: flex;
     align-items: center;
+    gap: 6px;
     cursor: pointer;
     white-space: nowrap;
 }
 
 #radio-choice input[type="radio"] {
-    margin-right: 6px;
+    margin: 0;
 }
 
 textarea#reasonOfLeaving {
@@ -453,6 +454,22 @@ textarea#reasonOfLeaving {
     padding-bottom: 10px;
     border-bottom: 1px solid #eaeaea;
     margin-bottom: 12px;
+    gap: 10px;
+}
+
+.delete-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.delete-btn:hover {
+    background-color: #b71c1c;
 }
 
 .card-header h3 {
@@ -518,7 +535,8 @@ textarea#reasonOfLeaving {
 }
 
 .proof-img {
-    max-width: 240px;
+    max-width: 280px;
+    max-height: 160px;
     border-radius: 10px;
     border: 1px solid #ddd;
     cursor: pointer;

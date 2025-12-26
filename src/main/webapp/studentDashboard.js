@@ -4,6 +4,9 @@ import {returnColor} from "./StatusCodes.js";
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("imageOverlay");
     const overlayImg = document.getElementById("overlayImg");
+
+    let hasActiveOutpass = false; // only one outpass at a time
+
     document.addEventListener("click", (e) => {
         if (e.target.classList.contains("proof-img")) {
             overlayImg.src = e.target.src;
@@ -49,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const showMessage = Message.showMessage
     displayStudentOutpasses()
 
-    function applyOutpass(reason, fromDate, toDate, leavingTime, expectedReturnTime, image = null) {
+        function applyOutpass(reason, fromDate, toDate, leavingTime, expectedReturnTime, image = null) {
         const student = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
         if (!student) {
             showMessage("Please login first before applying for an outpass.", STATUS.ERROR);
@@ -103,19 +106,30 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((res) => res.json())
             .then((requests) => {
+                hasActiveOutpass = false;
                 container.innerHTML = "";
                 if (!requests.length) {
                     Message.showMessage("No outpass requests found.", STATUS.INFO);
                     return;
                 }
                 requests.forEach((req) => {
+                    if (req.status === "Pending" || req.status === "Approved") {
+                        hasActiveOutpass = true;
+                    }
                     const card = document.createElement("div");
-                    card.className = `card ${returnColor(req.status)}`;
-                    card.innerHTML = `
-        <div class="card-header">
-            <h3>Outpass Request #${req.id}</h3>
-            <span class="status ${req.status.toLowerCase()}">${req.status}</span>
-        </div>
+                    if (req.type_of_outpass === "Medical") {
+                        card.classList.add("medical");
+                    }
+
+                    // delete outpass icon
+                    card.innerHTML = ` 
+        <div class="card-header"> 
+    <button class="delete-btn" data-id="${req.id}">
+        Delete
+    </button>
+    <h3>Outpass Request #${req.id}</h3>
+    <span class="status ${req.status.toLowerCase()}">${req.status}</span>
+</div>
         <div class="card-body">
             <div class="row">
                 <p><b>Reason:</b> ${req.reason}</p>
@@ -123,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="row">
                 <p><b>From:</b> ${req.from_date} ${req.from_time}</p>
-                <p><b>To:</b> ${req.to_date} ${req.to_time}</p>
+                <p><b>To:</b> ${req.to_date}</p>
             </div>
             <div class="row">
                 <p><b>Applied on:</b> ${req.applied_date}</p>
@@ -154,6 +168,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("outpassForm");
     form.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        if (hasActiveOutpass) {
+            showMessage(
+                "You already have an active outpass. Please delete it before applying a new one.",
+                STATUS.ERROR
+            );
+            return;
+        }
+
         const reason = document.getElementById("reasonOfLeaving").value;
         const fromDate = from.value;
         const toDate = to.value;
@@ -162,9 +185,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = image.files[0];
 
         if (!img && isMedical) {
-            showMessage("Please upload Proofs", STATUS.ERROR)
+            showMessage("Please upload Proofs", STATUS.ERROR);
             return;
         }
+
         applyOutpass(reason, fromDate, toDate, leave_time, return_time, img);
         setTimeout(() => form.reset(), 2000);
     });
@@ -180,6 +204,29 @@ document.addEventListener("DOMContentLoaded", () => {
             image.value = "";
         }
     })
+});
+
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-btn")) {
+        const requestId = e.target.dataset.id;
+
+        if (!confirm("Delete this outpass?")) return;
+
+        fetch("deleteOutpass", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: `requestId=${requestId}`
+        })
+            .then(res => res.text())
+            .then(data => {
+                if (data === STATUS.SUCCESS) {
+                    Message.showMessage("Outpass deleted successfully.", STATUS.SUCCESS);
+                    displayStudentOutpasses();
+                } else {
+                    Message.showMessage("Failed to delete outpass.", STATUS.ERROR);
+                }
+            });
+    }
 });
 
 function medicalOutpassForm() {
