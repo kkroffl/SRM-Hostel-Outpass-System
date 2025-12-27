@@ -10,10 +10,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.*;
 @WebServlet("/proofImage")
+
 public class ImageProviderAPI extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
         String id = req.getParameter("requestId");

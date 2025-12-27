@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-@WebServlet("/medical_outpass")
+@WebServlet("/medicalOutpass")
 @MultipartConfig(
         maxFileSize = 4 * 1024 * 1024
 )
@@ -30,12 +30,12 @@ public class ImageUploaderAPI extends HttpServlet {
         Part imagePart = req.getPart("proof_img");
         var errorWriter = res.getWriter();
         if (!imagePart.getContentType().startsWith("image/")) {
-            System.out.println("error|Invalid_File_Type");
-            errorWriter.write("error|Invalid_File_Type");
+            errorWriter.write("[ERROR] |INVALID_IMAGE_TYPE]");
+            return;
         }
         if (imagePart.getSize() > 4 * 1024 * 1024) {
-            System.out.println("error|File_Too_Large");
-            errorWriter.write("error|File_Too_Large");
+            errorWriter.write("[ERROR] | [FILE_TOO_LARGE]");
+            return;
         }
         InputStream imageStream = imagePart.getInputStream();
         try (Connection c = DBConnector.getConnection()) {
@@ -46,10 +46,10 @@ public class ImageUploaderAPI extends HttpServlet {
             updateImage.setBlob(1, imageStream, imagePart.getSize());
             updateImage.setInt(2, requestID);
             if (updateImage.executeUpdate() > 0) {
-                errorWriter.write("success|Image_Uploaded");
+                errorWriter.write("[SUCCESS] | [IMAGE_UPLOADED]");
             }
         } catch (SQLException _) {
-            errorWriter.write("sql_error|could_not_establish_connection");
+            errorWriter.write("[ERROR] | [SQL_ERROR] from ImageUploaderAPI");
         }
     }
 }

@@ -86,7 +86,8 @@ input, textarea {
 }
 
 .card {
-    width: 280px;
+    width: 80%;
+    height: 200px;
     border-radius: 10px;
     padding: 15px;
     color: white;
@@ -403,21 +404,22 @@ h1 {
 
 #radio-choice {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    gap: 24px;
+    gap: 32px;              /* consistent spacing */
+    flex-wrap: wrap;        /* prevents overflow on small screens */
     font-size: 16px;
 }
 
 #radio-choice label {
     display: flex;
     align-items: center;
+    gap: 6px;
     cursor: pointer;
     white-space: nowrap;
 }
 
 #radio-choice input[type="radio"] {
-    margin-right: 6px;
+    margin: 0;
 }
 
 textarea#reasonOfLeaving {
@@ -448,11 +450,28 @@ textarea#reasonOfLeaving {
 
 .card-header {
     display: flex;
+    color: #222222;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #eaeaea;
     margin-bottom: 12px;
+    gap: 10px;
+}
+
+.delete-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.delete-btn:hover {
+    background-color: #b71c1c;
 }
 
 .card-header h3 {
@@ -495,16 +514,18 @@ textarea#reasonOfLeaving {
 }
 
 .row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin: 6px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    margin: 4px 0;
 }
 
 .row p {
     margin: 0;
-    flex: 1;
+    font-size: 16px;
+    line-height: 1.4;
 }
+
 
 .proof-section {
     margin-top: 14px;
@@ -518,7 +539,8 @@ textarea#reasonOfLeaving {
 }
 
 .proof-img {
-    max-width: 240px;
+    max-width: 280px;
+    max-height: 160px;
     border-radius: 10px;
     border: 1px solid #ddd;
     cursor: pointer;
@@ -648,4 +670,43 @@ textarea#reasonOfLeaving {
 #status-of-outpass.approved b
 {
     color: white;
+}
+.disabled-outpass {
+    opacity: 0.45;
+    pointer-events: none;
+    filter: grayscale(100%);
+}
+
+.no-outpass-message {
+    text-align: center;
+    font-weight: bold;
+    color: #777;
+    margin-top: 10px;
+}
+.active-outpass-full {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+.active-outpass-full .card-body {
+    font-size: 1.05rem;
+}
+.qr-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* horizontal center */
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.qr-section .label {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.qr-section canvas {
+    display: block;
 }

@@ -26,7 +26,6 @@ public class ReceiveOutpassAPI extends HttpServlet {
         LocalDate date = LocalDate.parse(d);
         return Date.valueOf(date);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -37,16 +36,14 @@ public class ReceiveOutpassAPI extends HttpServlet {
         String fromDate = req.getParameter("fromDate");
         String toDate = req.getParameter("toDate");
         String leavingTime = req.getParameter("leavingTime");
-        String returnTime = req.getParameter("expectedReturnTime");
-        boolean isMedical = Boolean.parseBoolean(req.getParameter("isMedical").strip());
+        String typeOfOutpass=req.getParameter("typeOfOutpass");
         if (registeredNumber == null || registeredNumber.isEmpty()) {
-            res.getWriter().print("missing_rId");
+            res.getWriter().print("[ERROR] | [FIELD] \"registeredNumber\" is null\\empty from ReceiveOutpassAPI");
             return;
         }
 
         try (Connection conn = DBConnector.getConnection()) {
 
-            // 1. Get student.id
             PreparedStatement findId = conn.prepareStatement(
                     "SELECT id FROM students WHERE registeredNumber = ?"
             );
@@ -54,13 +51,12 @@ public class ReceiveOutpassAPI extends HttpServlet {
 
             ResultSet rs = findId.executeQuery();
             if (!rs.next()) {
-                res.getWriter().print("student_not_found");
-                System.out.println("student_not_found");
+                res.getWriter().print("[ERROR] | [FAILED SEARCHING_ID] from ReceiveOutpassAPI");
                 return;
             }
             int studentId = rs.getInt("id");
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO outpass_requests (studentId, reason, leaving_date,leaving_time,applied_date,applied_time, expected_return_date, expected_return_time, name,type_of_outpass) " +
-                            "VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)"
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO outpass_requests (studentId, reason, expected_leaving_date,expected_leaving_time,applied_date,applied_time, expected_return_date, name,type_of_outpass) " +
+                            "VALUES (?, ?, ?, ?, ?, ?,?,?,?)"
                     ,Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, studentId);
             ps.setString(2, reason);
@@ -69,29 +65,27 @@ public class ReceiveOutpassAPI extends HttpServlet {
             ps.setDate(5, Date.valueOf(LocalDate.now()));
             ps.setTime(6, Time.valueOf(LocalTime.now()));
             ps.setDate(7, returnDateOf(toDate));
-            ps.setTime(8, returnTimeOf(returnTime));
-            ps.setString(9, name);
-            String typeOfOutpass = isMedical ? "Medical" : "Other";
-            ps.setString(10,typeOfOutpass);
+            ps.setString(8, name);
+            ps.setString(9,typeOfOutpass);
             ps.executeUpdate();
-            if (isMedical) {
+            if (typeOfOutpass.equalsIgnoreCase("Medical")) {
                 try (ResultSet rst = ps.getGeneratedKeys()) {
                     if (rst.next()) {
                         req.setAttribute("requestID", rst.getInt(1));
-                        RequestDispatcher rd = req.getRequestDispatcher("/medical_outpass");
+                        RequestDispatcher rd = req.getRequestDispatcher("/medicalOutpass");
                         rd.forward(req, res);
                     } else {
-                        System.out.println("Failed to retrieve requestID");
-                        throw new SQLException("Failed to retrieve requestID");
+                        throw new SQLException("[FAILED_RECEIVING_GENERATED_KEYS]");
                     }
                 } catch (SQLException e) {
-                    res.getWriter().write("error|" + e.getMessage());
+                    res.getWriter().write("[ERROR] | " + e.getMessage() + "from ReceiveOutpassAPI");
                 }
             }
+            else{
+                res.getWriter().print("[SUCCESS] | [SUCCESSFULLY_UPDATED_DATA]");
+            }
         } catch (Exception e) {
-            res.getWriter().print("error");
-        }finally {
-            res.getWriter().print("success");
+            res.getWriter().print("[ERROR] | [SQL_ERROR] from ReceiveOutpassAPI");
         }
     }
 }

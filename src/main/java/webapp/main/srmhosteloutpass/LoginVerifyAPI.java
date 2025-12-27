@@ -39,13 +39,13 @@ public class LoginVerifyAPI extends HttpServlet {
                 HttpSession session = req.getSession();
                 session.setAttribute("studentId", registeredNumber);
                 session.setAttribute("studentName", name);
-                out.print("success|" + name + "|" + registeredNumber);
+                out.print("[SUCCESS] | "+name+" | "+registeredNumber);
             } else {
                 out.print("invalid");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            out.print("error");
+            out.print("[ERROR] | [SQL_ERROR] from LoginVerifyAPI");
         }
     }
 }

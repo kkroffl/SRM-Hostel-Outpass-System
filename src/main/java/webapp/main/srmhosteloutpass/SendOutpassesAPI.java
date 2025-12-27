@@ -1,7 +1,5 @@
 package webapp.main.srmhosteloutpass;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,73 +10,111 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Arrays;
 
-@WebServlet("/secure/studentOutpasses")
-@MultipartConfig
+@WebServlet("/studentOutpasses")
 public class SendOutpassesAPI extends HttpServlet {
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
+
         res.setContentType("application/json");
         req.setCharacterEncoding("UTF-8");
+
         String regNo = req.getParameter("registeredNumber");
+
+        if (regNo == null || !regNo.startsWith("RA")) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid registeredNumber");
+            return;
+        }
+
         try (Connection conn = DBConnector.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT requestId,reason,applied_date,applied_time, leaving_date,leaving_time, expected_return_date,expected_return_time,type_of_outpass,proof_img, status FROM outpass_requests WHERE studentId = (SELECT id FROM students WHERE registeredNumber = ?)");
+
+            PreparedStatement ps = conn.prepareStatement("""
+                SELECT 
+                    r.requestId,
+                    s.name,
+                    r.reason,
+                    r.applied_date,
+                    r.applied_time,
+                    r.expected_leaving_date,
+                    r.expected_leaving_time,
+                    r.expected_return_date,
+                    r.actual_return_date,
+                    r.actual_return_time,
+                    r.type_of_outpass,
+                    r.status
+                FROM outpass_requests r
+                JOIN students s ON r.studentId = s.id
+                WHERE s.registeredNumber = ?
+            """);
+
             ps.setString(1, regNo);
             ResultSet rs = ps.executeQuery();
-            if(!rs.next()){
-                res.setContentType("text/plain");
-                res.getWriter().print("[ERROR] | [SQL_ERROR] from SendOutpassesAPI");
-                return;
-            }
+
             StringBuilder json = new StringBuilder("[");
             boolean first = true;
-            String typeOfOutpass,requestID;
-            do{
+
+            while (rs.next()) {
+
                 if (!first) json.append(",");
                 first = false;
+
+                String requestId = rs.getString("requestId");
+                String typeOfOutpass = rs.getString("type_of_outpass");
+
+                // If medical, send URL instead of forwarding
+                String proofUrl = typeOfOutpass.equalsIgnoreCase("Medical")
+                        ? req.getContextPath() + "/proofImage?requestId=" + requestId
+                        : null;
+
                 json.append("""
-            {
-              "id": "%s",
-              "name": "%s",
-              "reason": "%s",
-              "applied_date": "%s",
-              "applied_time": "%s",
-              "from_date": "%s",
-              "from_time": "%s",
-              "to_date": "%s",
-              "to_time": "%s",
-              "actual_return_date" : "%s",
-              "actual_return_time": "%s",
-              "type_of_outpass": "%s",
-              "status": "%s"
-            }
-            """.formatted(
-                        requestID=rs.getString("requestId"),
+                    {
+                      "id": "%s",
+                      "name": "%s",
+                      "reason": "%s",
+                      "applied_date": "%s",
+                      "applied_time": "%s",
+                      "expected_leaving_date": "%s",
+                      "expected_leaving_time": "%s",
+                      "expected_return_date": "%s",
+                      "actual_return_date": "%s",
+                      "actual_return_time": "%s",
+                      "type_of_outpass": "%s",
+                      "status": "%s",
+                      "proof_url": %s
+                    }
+                    """.formatted(
+                        requestId,
                         rs.getString("name"),
                         rs.getString("reason"),
                         rs.getString("applied_date"),
                         rs.getString("applied_time"),
-                        rs.getString("leaving_date"),
-                        rs.getString("leaving_time"),
+                        rs.getString("expected_leaving_date"),
+                        rs.getString("expected_leaving_time"),
                         rs.getString("expected_return_date"),
-                        rs.getString("expected_return_time"),
                         rs.getString("actual_return_date"),
                         rs.getString("actual_return_time"),
-                        typeOfOutpass=rs.getString("type_of_outpass"),
-                        rs.getString("status")
+                        typeOfOutpass,
+                        rs.getString("status"),
+                        proofUrl == null ? "null" : "\"" + proofUrl + "\""
                 ));
-            } while (rs.next());
+            }
+
             json.append("]");
             res.getWriter().write(json.toString());
-            if(typeOfOutpass.equalsIgnoreCase("Medical")){
-                RequestDispatcher requestDispatcher=req.getRequestDispatcher("proofImage");
-                req.setAttribute("requestId",requestID);
-                requestDispatcher.forward(req,res);
-            }
+
         } catch (Exception e) {
-            res.setContentType("text/plain");
-            res.getWriter().print("[ERROR] | [SQL_CONNECTION_ERROR] from SendOutpassesAPI");
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Server error");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+        res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                "GET not allowed");
     }
 }

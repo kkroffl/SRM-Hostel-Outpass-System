@@ -1,6 +1,5 @@
-import {LOGGED_IN_STUDENT, Message, SEC, STATUS} from "./Main.js";
+import {LOGGED_IN_STUDENT, showMessage, SEC, STATUS, CONTEXT_PATH} from "./Utility.js";
 import { InputVerifier } from "./InputVerifier.js";
-const showMessage = Message.showMessage;
 function loginStudent(email, password) {
     showMessage("Logging in, please wait...");
 
@@ -11,22 +10,16 @@ function loginStudent(email, password) {
     })
         .then((res) =>  res.text())
         .then((data) => {
-
-            console.log(data)
-            if (data.startsWith("success")) {
+            if (data.startsWith("[SUCCESS]")) {
                 const parts = data.split("|");
-
                 const student = {
-                    name: parts[1],
-                    registeredNumber: parts[2],
+                    name: parts[1].trim(),
+                    registeredNumber: parts[2].trim(),
                     email
                 };
-
                 localStorage.setItem(LOGGED_IN_STUDENT, JSON.stringify(student));
-
                 setTimeout(()=>showMessage("Login successful. Choose an action below.", STATUS.SUCCESS),3*SEC);
-
-                window.location.pathname=`homepage.html`
+                window.location.pathname=CONTEXT_PATH+`/homepage.html`
 
             } else {
                 showMessage(

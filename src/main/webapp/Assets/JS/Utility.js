@@ -7,14 +7,18 @@ export const STATUS_CODES=Object.freeze({
 export const TYPE_OF_OUTPASS=Object.freeze({
     MEDICAL:"Medical",
     OTHER:"Other",
-    NORMAL:"Normal"
+    NORMAL:"Normal",
+    HOMETOWN:"Hometown"
 })
+export const CONTEXT_PATH="SRMHostelOutpass_war_exploded";
 export function returnClassBasedOnTypeOfOutpass(type){
     switch (type){
         case TYPE_OF_OUTPASS.MEDICAL:
             return "type-medical";
         case TYPE_OF_OUTPASS.NORMAL:
-            return "type-normal"
+            return "type-normal";
+        case TYPE_OF_OUTPASS.HOMETOWN:
+            return "type-hometown"
         default:
             return "type-other";
     }
@@ -39,7 +43,7 @@ export const STATUS = Object.freeze({
 });
 export const LOGGED_IN_STUDENT = "loggedInStudent";
 export function returnToHome(){
-    window.location.href=`home.html`
+    window.location.pathname=CONTEXT_PATH+`/home.html`
 }
 class Message {
     static showMessage(msg, type = STATUS.INFO) {

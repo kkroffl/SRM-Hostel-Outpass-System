@@ -7,7 +7,7 @@ let parentMobile = "";
 (student) || (window.location.href = "login.html");
 
 function fetchStudentDetailsAndDisplay() {
-    fetch(`/secure/studentDetails`, {
+    fetch(`studentDetails`, {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: `registeredNumber=${encodeURIComponent(student.registeredNumber)}`
@@ -15,7 +15,7 @@ function fetchStudentDetailsAndDisplay() {
         .then(res => res.text())
         .then(data => {
             const details = data.split('|');
-            if (data.startsWith("success")) {
+            if (data.startsWith("[SUCCESS]")) {
                 studentMobile = details[1];
                 parentMobile = details[2];
             } else {
@@ -34,11 +34,15 @@ function fetchStudentDetailsAndDisplay() {
 }
 
 function returnFullURLToShowOutpass(id) {
-    return `outpassDetails.html?requestId=${id}`
+    return `fullOutpassDetails.html?requestId=${id}`
 }
 
 function displayStudentOutpassHistoryAsTable() {
-    fetch(`student_outpasses?registeredNumber=${encodeURIComponent(student.registeredNumber)}`)
+    fetch("studentOutpasses",{
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:`registeredNumber=${encodeURIComponent(student.registeredNumber)}`
+    })
         .then(res => res.json())
         .then(outpasses => {
             document.getElementById("outpassContainer").innerHTML = `
@@ -69,13 +73,13 @@ function displayStudentOutpassHistoryAsTable() {
             outpasses.forEach(outpass => {
                 historyTable.innerHTML += `
                 <tr>
-                    <td>${outpass.requestId}</td>
+                    <td>${outpass.id}</td>
                     <td>${outpass.applied_date}</td>
-                    <td>${outpass.from_date}</td>
-                    <td>${outpass.to_date}</td>
+                    <td>${outpass.expected_leaving_date}</td>
+                    <td>${outpass.expected_return_date}</td>
                     <td class="${returnClassBasedOnStatusCode(outpass.status)}">${outpass.status}</td>
                     <td class="${returnClassBasedOnStatusCode(outpass.type_of_outpass)}">${outpass.type_of_outpass}</td>
-                    <td><a class="outpass-view-more" href="${returnFullURLToShowOutpass(outpass.requestId)}">VIEW</a></td>
+                    <td><a class="outpass-view-more" href="${returnFullURLToShowOutpass(outpass.id)}">VIEW</a></td>
                 </tr>
             `;
             });

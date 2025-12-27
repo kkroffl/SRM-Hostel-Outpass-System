@@ -85,30 +85,43 @@
     <button onclick="window.print()">PRINT</button>
 </div>
 
-<script>
+<script type="module">
+    import QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm";
     const params = new URLSearchParams(window.location.search);
     const requestId = params.get("requestId");
-    fetch(`outpassDetails?registeredNumber=${requestId}`)
+    fetch("specific/studentOutpassDetails",{
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:`requestId=${encodeURIComponent(requestId)}`
+    })
         .then(res => res.json())
-        .then(data => renderOutpass(data));
+        .then(data => {renderOutpass(data)});
     function changeTitle(s){
         document.title=`${document.title} | ID#${s}`
     }
+    function generateQR(canvasId, data) {
+        QRCode.toCanvas(
+            document.getElementById(canvasId),
+            data,
+            { width: 160 }
+        );
+    }
     function renderOutpass(o) {
         const card = document.getElementById("outpassCard");
-        changeTitle(o.requestId)
+        changeTitle(o.id)
+        const canvasId=`qrCanvas-${o.id}`
         card.innerHTML += `
-        <div class="row"><span class="label">Request ID</span><span>${o.requestId}</span></div>
-        <div class="row"><span class="label">Student ID</span><span>${o.studentId }</span></div>
+        <div class="row"><span class="label">Request ID</span><span>${o.id}</span></div>
+        <div class="row"><span class="label">Student ID</span><span>${o.studentId}</span></div>
         <div class="row"><span class="label">Name</span><span>${o.name}</span></div>
         <div class="row"><span class="label">Reason</span><span>${o.reason}</span></div>
-        <div class="row"><span class="label">Leaving Date</span><span>${o.leaving_date}</span></div>
-        <div class="row"><span class="label">Leaving Time</span><span>${o.leaving_time}</span></div>
+        <div class="row"><span class="label">Leaving Date</span><span>${o.expected_leaving_date}</span></div>
+        <div class="row"><span class="label">Leaving Time</span><span>${o.expected_leaving_time}</span></div>
         <div class="row"><span class="label">Expected Return</span>
-            <span>${o.expected_return_date} ${o.expected_return_time}</span>
+            <span>${o.expected_return_date} </span>
         </div>
         <div class="row"><span class="label">Actual Return</span>
-            <span>${o.actual_return_date ?? "—"} ${o.actual_return_time ?? ""}</span>
+            <span>${o.actual_return_date || "[YET_TO_COME]"}      ${o.actual_return_time || "[YET_TO_COME]"}</span>
         </div>
         <div class="row">
             <span class="label">Status</span>
@@ -119,14 +132,20 @@
             <span>${o.applied_date} ${o.applied_time}</span>
         </div>
         ${
-            o.type_of_outpass==='Medical'
+            o.type_of_outpass === 'Medical'
                 ? `<div class="row">
                    <span class="label">Proof</span>
-                   <img src="outpassProof?requestId=${o.requestId}">
+                   <img src="${o.proof_url}">
                </div>`
                 : ""
         }
+        <div class="row qr-section">
+    <span class="label">QR Code</span>
+    <canvas id="${canvasId}" width="160" height="160"></canvas>
+</div>
+
     `;
+        generateQR(canvasId,o.id);
     }
 </script>
 
