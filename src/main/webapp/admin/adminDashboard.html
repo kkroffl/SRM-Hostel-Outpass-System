@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Admin Dashboard — SRM Hostel Outpass</title>
+    <link rel="stylesheet" href="Assets/style.css" />
+    <style>
+        /* Page-specific small styles (won't touch global classes) */
+        .admin-wrapper {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-left img.logo {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+        }
+
+        .top-left h1 {
+            margin: 0;
+            font-size: 1.9rem;
+            color: var(--srm-blue);
+        }
+
+        #message {
+            min-height: 40px;
+        }
+
+        #adminCards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        /* card styles (page-scoped) */
+        .admin-card {
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            padding: 14px;
+            border-radius: 10px;
+            width: 320px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .admin-card h4 {
+            margin: 6px 0 8px 0;
+            color: #0b3b66;
+        }
+
+        .admin-card p {
+            margin: 4px 0;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .small-muted {
+            color: #666;
+            font-size: 0.88rem;
+        }
+
+        @media (max-width: 720px) {
+            .admin-card {
+                width: 100%;
+            }
+
+            .top-left h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="navbar student-navbar">
+    <div class="left-section">
+        <img src="./images/img.png" class="logo" alt="SRM Logo"/>
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+    </div>
+</header>
+
+<main class="admin-wrapper">
+    <div id="message"></div>
+
+    <section class="top-bar">
+        <div class="small-muted">Manage student outpass requests — approve or reject.</div>
+        <div>
+            <div style="display:flex; gap:8px; align-items:center; justify-content:center;margin-bottom: 10px;">
+                <input
+                        type="text"
+                        id="searchOutpass"
+                        placeholder="Search by Student ID"
+                        style="
+            padding:6px 10px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            outline:none;
+            font-size:14px;
+            width:200px;
+        "/>
+
+                <button
+                        id="search-button"
+                        style="
+            padding:6px 14px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            background:#f5f5f5;
+            cursor:pointer;
+            font-size:14px;
+        "
+                >
+                    Search
+                </button>
+            </div>
+
+            <!--                    oninput="filterOutpasses(this.value)"-->
+            <button class="logout-btn" onclick="loadAdminOutpasses()">Refresh</button>
+        </div>
+    </section>
+
+    <section id="adminCards" aria-live="polite">
+        <!-- admin cards will be injected here by admin JS -->
+    </section>
+
+</main>
+<footer class="app-footer">
+    <p>© SRM Institute of Science and Technology</p>
+    <a href="index.html">
+    <button class="logout-btn">Logout</button>
+    </a>
+</footer>
+<script type="module" defer src="adminDashboard.js"></script>
+</body>
+</html>

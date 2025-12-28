@@ -40,7 +40,7 @@ class Student {
             .catch(() => showMessage("Server error, Please check your connection.", STATUS.ERROR));
     }
 }
-if (window.location.pathname.endsWith("home.html")) {
+if (window.location.pathname.endsWith("studentHome.html")) {
     document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("registerForm").addEventListener("submit", (e) => {
                 e.preventDefault();
